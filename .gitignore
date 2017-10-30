@@ -38,3 +38,7 @@ node_modules
 
 ### PhPStorm ###
 .idea/
+
+
+## API keys
+client/hrsf85-chatterbox-server/client/env/config.js
