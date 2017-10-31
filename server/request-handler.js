@@ -64,21 +64,39 @@ var requestHandler = function(request, response) {
   
   var statusCode = 200;
   
-  if ( request.method === 'POST' && request.url === '/classes/messages' ) {
-    statusCode = 201;
-    console.log(output.results);
-    output.results.push(request._postData);
+  if (request.method === 'GET' && request.url === '/classes/messages') {
+    response.writeHead(statusCode, headers);
+    response.end(JSON.stringify(output));
+    
+  } else if (request.method === 'POST' && request.url === '/classes/messages') {
+    response.writeHead(201, headers);
+    let body = [];
+    
+    
+    request.on('data', (chunk) => {
+      body.push(chunk);
+    });
+    
+    request.on('end', () => {
+      body = Buffer.concat(body).toString();
+      output.results.push(JSON.parse(body));
+      response.end(JSON.stringify(output));
+    });
+    
+    request.on('error', (err) => {
+      // This prints the error message and stack trace to `stderr`.
+      console.error(err.stack);
+    });
+    
   } else {
-    //statusCode = 200;
+    response.writeHead(404, headers);
+    response.end(JSON.stringify(output));
   }
-  console.log('-----------------');
-  console.log(request);
-  console.log(output.results);
   
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
+  //response.writeHead(statusCode, headers);
 
 
   // Make sure to always call response.end() - Node may not send
@@ -88,7 +106,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end(JSON.stringify(output));
+  //response.end(JSON.stringify(output));
 };
 
 
