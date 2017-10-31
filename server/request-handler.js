@@ -12,7 +12,24 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 
-var output = {results: []};
+// var output = {
+//   results: [
+//     {
+//       username: 'vinoj',
+//       text: 'this is a test',
+//       // roomname: 'lobby',
+//       objectId: 1
+//     }
+//   ]
+// };
+
+var messages = [ {
+  username: 'vinoj',
+  text: 'this is a test',
+  // roomname: 'lobby',
+  objectId: 100
+}
+];
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -46,7 +63,7 @@ var requestHandler = function(request, response) {
   // client from this domain by setting up static file serving.
   var defaultCorsHeaders = {
     'access-control-allow-origin': '*',
-    'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'access-control-allow-methods': ' PUT, DELETE, OPTIONS',
     'access-control-allow-headers': 'content-type, accept',
     'access-control-max-age': 10 // Seconds.
   };
@@ -57,18 +74,24 @@ var requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['content-type'] = 'text/plain';
-
-
-  //
+  //headers['content-type'] = 'text/plain';
+  headers['content-type'] = 'application/json';
   
+
   var statusCode = 200;
+  // handle options
   
-  if (request.method === 'GET' && request.url === '/classes/messages') {
+  if (request.method === 'OPTIONS') {
+    // let status
     response.writeHead(statusCode, headers);
-    response.end(JSON.stringify(output));
+    response.end();
+  } else if (request.method === 'GET' /*&& request.url === '/classes/messages'*/) {
+    console.log('GETTTTTTTTTTTTTTTTT');
+    response.writeHead(statusCode, headers);
+    // console.log(JSON.stringify(output.results));
+    response.end(JSON.stringify({results: messages}));
     
-  } else if (request.method === 'POST' && request.url === '/classes/messages') {
+  } else if (request.method === 'POST' /*&& request.url === '/classes/messages'*/) {
     response.writeHead(201, headers);
     let body = [];
     
@@ -80,7 +103,7 @@ var requestHandler = function(request, response) {
     request.on('end', () => {
       body = Buffer.concat(body).toString();
       output.results.push(JSON.parse(body));
-      response.end(JSON.stringify(output));
+      response.end(JSON.stringify(output.results));
     });
     
     request.on('error', (err) => {
@@ -90,7 +113,7 @@ var requestHandler = function(request, response) {
     
   } else {
     response.writeHead(404, headers);
-    response.end(JSON.stringify(output));
+    response.end(JSON.stringify(output.results));
   }
   
 
