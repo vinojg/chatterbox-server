@@ -91,6 +91,7 @@ app = {
   },
 
   sendMsg: function(message) {
+    console.log(message);
     app.startSpinner();
     $.ajax({
       type: 'POST',

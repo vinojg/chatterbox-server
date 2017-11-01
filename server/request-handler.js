@@ -23,13 +23,17 @@ this file and include it in basic-server.js so that it actually works.
 //   ]
 // };
 
-var messages = [ {
-  username: 'vinoj',
-  text: 'this is a test',
-  // roomname: 'lobby',
-  objectId: 100
-}
-];
+var output = {
+  results: []
+};
+
+// var messages = [ {
+//   username: 'vinoj',
+//   text: 'this is a test',
+//   // roomname: 'lobby',
+//   objectId: 100
+// }
+// ];
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -47,7 +51,7 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
-
+  
   // The outgoing status.
   
   // See the note below about CORS headers.
@@ -85,13 +89,14 @@ var requestHandler = function(request, response) {
     // let status
     response.writeHead(statusCode, headers);
     response.end();
-  } else if (request.method === 'GET' /*&& request.url === '/classes/messages'*/) {
+  } else if (request.method === 'GET' && request.url === '/classes/messages') {
     console.log('GETTTTTTTTTTTTTTTTT');
     response.writeHead(statusCode, headers);
     // console.log(JSON.stringify(output.results));
-    response.end(JSON.stringify({results: messages}));
+    response.end(JSON.stringify(output));
     
-  } else if (request.method === 'POST' /*&& request.url === '/classes/messages'*/) {
+  } else if (request.method === 'POST' && request.url === '/classes/messages') {
+    console.log('POST%%%%%%%%%%%%%%%%%%%');
     response.writeHead(201, headers);
     let body = [];
     
